@@ -78,9 +78,19 @@ async def get_productivity_report():
 
 
 @app.post("/log_task")
-async def log_task(task: DeveloperTask):
+async def log_task(task: DeveloperTask) -> str:
+    """Logs a new developer task by assigning a unique ID and storing it in the mock database."""
     new_id = max(MOCK_TASKS.keys()) + 1 if MOCK_TASKS else 1
-    task.task_id = new_id
-    MOCK_TASKS[new_id] = task
+    task_data = task.model_dump()
+    task_data['task_id'] = new_id
+    new_task = DeveloperTask(**task_data)
+    MOCK_TASKS[new_id] = new_task
     
-    return f"Task ID {task.task_id} logged successfully."
+    return f"Task ID {new_id} logged successfully."
+
+@app.get("/task/{task_id}/status")
+async def get_task_status(task_id: int) -> Dict[str, str]:
+    task = MOCK_TASKS.get(task_id)
+    if not task:
+        return {"error": "Task not found"}
+    return {"task_id": str(task_id), "status": task.status.value}
