@@ -1,3 +1,7 @@
+from enum import Enum
+from pydantic import BaseModel
+
+
 class TaskCompletionMetrics(BaseModel):
     task_id: str
     total_time: float

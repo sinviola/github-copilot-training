@@ -61,18 +61,18 @@ async def generate_productivity_report() -> ProductivityReport:
 app = FastAPI(title="Productivity Reporting System")
 
 @app.get("/status")
-def get_status():
+def get_status() -> dict[str, str]:
     return {"status": "ok"}
 
 
 @app.get("/tasks", response_model=List[DeveloperTask])
-async def get_all_tasks():
+async def get_all_tasks() -> List[DeveloperTask]:
     """Returns a list of all logged tasks."""
     return await fetch_all_tasks()
 
 
 @app.get("/report", response_model=ProductivityReport)
-async def get_productivity_report():
+async def get_productivity_report() -> ProductivityReport:
     """Returns the calculated productivity report."""
     return await generate_productivity_report()
 
