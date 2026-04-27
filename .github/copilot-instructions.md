@@ -90,6 +90,46 @@ Explicit validation: Ensure API endpoints return correct models; test via Swagge
 
 Dependencies: All listed in pyproject.toml; no hidden deps. Uses standard libraries implicitly.
 
+## Testing Guidelines
+
+### Directory Structure
+- Separate `unit/` and `integration/` subdirectories under `tests/`.
+- All tests must live inside the `tests/` directory.
+- Include `conftest.py` for shared fixtures (app, client, db_session, auth_token).
+
+### Naming Conventions
+- Unit test files: `test_<module>.py` (e.g., `app/main.py` → `tests/unit/test_main.py`).
+- Integration test files: `test_<module>.py` (e.g., endpoints in `app/main.py` → `tests/integration/test_main.py`).
+- Test function names: `def test_<target>_<expected_behavior>()`.
+
+### Unit Testing Guidelines
+- Test one function or class in isolation.
+- Mock external dependencies when needed.
+- Use `pytest.raises` for exception testing.
+
+### Integration Testing Guidelines
+- Use `httpx.AsyncClient` for endpoint tests.
+- Mark integration tests with `@pytest.mark.integration`.
+- Assert status codes, JSON structures, and endpoint behavior.
+
+### API Testing Requirements
+- Cover happy path, validation errors, and failure cases.
+- Validate responses against Pydantic models in `app/models.py`.
+- Ensure async endpoints are awaited correctly.
+
+### Fixtures
+- Provide `app`, `client`, `db_session`, and `auth_token` fixtures in `tests/conftest.py`.
+- Reuse fixtures across tests to keep tests fast and deterministic.
+
+### Coverage
+- Check coverage with `uv run pytest --cov=app tests/`.
+- Aim for 85%+ coverage for changed modules; add tests if coverage is insufficient.
+
+### Agent Behavior Rules for Test Generation
+- Generated tests must follow the rules above.
+- Place files only under `tests/` and do not create files outside `tests/`.
+- Include happy path, validation, error-condition, and type-checking tests.
+
 ### Key Files and Snippets
 Repository root files:
 - pyproject.toml
